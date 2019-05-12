@@ -12,9 +12,14 @@
     <bean id="dataSoure" class="com.alibaba.druid.pool.DruidDataSource"
           destroy-method="close"
           p:driverClassName="com.mysql.cj.jdbc.Driver"
-          p:url="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;userSSL=false&amp;serverTimezone=GMT%2B8"
+          p:url="jdbc:mysql://localhost:3306/laboratory?serverTimezone=UTC"
           p:username="root"
-          p:password="make"/>
+          p:password="make"
+          p:validationQuery="SELECT 1"
+   p:testWhileIdle="true"
+    p:testOnBorrow="false"
+    p:testOnReturn="false"
+            />
     <bean id="sqlSessionFactory"
           class="org.mybatis.spring.SqlSessionFactoryBean"
           p:dataSource-ref="dataSoure"
@@ -29,6 +34,16 @@
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
           p:dataSource-ref="dataSoure"/>
+
+    <!-- 文件上传配置 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 默认编码 -->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!-- 上传文件大小限制为31M，31*1024*1024 -->
+        <property name="maxUploadSize" value="32505856"/>
+        <!-- 内存中的最大值 -->
+        <property name="maxInMemorySize" value="4096"/>
+    </bean>
 
 </beans>
 

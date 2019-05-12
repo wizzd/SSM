@@ -12,27 +12,26 @@ import org.springframework.stereotype.Service;
  * @date 2016/10/31
  */
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private UserDao userDao;
+
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
-
-    public  UserDo login(String name,String password){
-        UserDo userDo = userDao.getUser(name,password);
-        if  (userDao == null) {
-            return null;
+    @Override
+    public void login(String openId, String name, String avatarUrl) {
+        System.out.println("------------start login (UserServiceImpl)-----");
+//        userDao.register("openId","name","avatarUrl");
+        userDao.register(openId, name, avatarUrl);
+     /*   int id = userDao.getIdByOpenId(openId);
+        System.out.println("id=**  "+id);
+        if (id <= 0) {
+            userDao.register(openId, name, avatarUrl);
         } else {
-            return userDo;
-        }
-    }
-    public void updateUserInfo(UserDo oldUser,UserDo newUser) {
-        userDao.updateUserInfo(oldUser,newUser);
-    }
-    public void signUp(UserDo userDo){
-        userDao.addUser(userDo);
-    }
+            userDao.updata(openId, name, avatarUrl);
+        }*/
 
+    }
 }
