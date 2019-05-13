@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 @Service
 public class ImageServiceImpl implements ImageService {
     private ImageDao imageDao;
@@ -43,29 +44,65 @@ public class ImageServiceImpl implements ImageService {
                     String realPath = request.getSession().getServletContext().getRealPath("/");
                     // 自定义的文件名称
                     String trueFileName = String.valueOf(System.currentTimeMillis()) + fileName;
-                    ;
                     // 设置存放图片文件的路径
                     path = realPath + "uploads\\" + trueFileName;
                     System.out.println("文件成功上传到指定目录下 存放图片文件的路径:" + path);
                     file.transferTo(new File(path));
                     //Analysis 识别图片中的信息并转换成json字符  Ocr 进行图片识别
-                    String json = Analysis.getPoint(Ocr.toString(path).toString());
-                    System.out.println("Analysis.getPoint的结果：  "+json);
+                    String s = Ocr.toString(path);
+//                    不能去 - 对于 2015-1-12 来说 去杠后 难以分别2015 11 2 还是2015 1 12
+                    s=s.replaceAll("/", "-");
+                    String json = Analysis.getPoint(s);
+                    System.out.println("Analysis.getPoint的结果：  " + json);
                     JSONObject jsonObject = new JSONObject(json);
-                    String timeStr = jsonObject.get("time").toString();
-                    LocalDate time =null;
-                    if (timeStr.contains("-")) {
-                         time = LocalDate.parse(jsonObject.get("time").toString(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    }else {
-                         time = LocalDate.parse(jsonObject.get("time").toString(),
-                                DateTimeFormatter.ofPattern("yyyyMMdd"));
+                    String jsontime = jsonObject.get("time").toString();
+                    LocalDate time =LocalDate.parse("10000101",
+                            DateTimeFormatter.ofPattern("yyyyMMdd"));
+                    if (jsontime.contains("-")) {
+                        if (jsontime.length() == 8){
+                             time = LocalDate.parse(jsontime,
+                                    DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        }
+                        if (jsontime.length() == 9){
+                            try{
+                                 time = LocalDate.parse(jsontime,
+                                        DateTimeFormatter.ofPattern("yyyy-MM-d"));
+                            }catch (Exception e){
+                                try{
+
+                                    time = LocalDate.parse(jsontime,
+                                            DateTimeFormatter.ofPattern("yyyy-M-dd"));
+                                }catch (Exception e1){
+                                    try{
+
+                                        time = LocalDate.parse(jsontime,
+                                                DateTimeFormatter.ofPattern("yyyyMM-dd"));
+                                    }catch (Exception e2){
+                                        time = LocalDate.parse(jsontime,
+                                                DateTimeFormatter.ofPattern("yyyy-MMdd"));
+                                    }
+                                }
+                            }
+                        }
+                    }else{
+                        if (jsontime.length()>=8){
+                            jsontime = jsontime.substring(0, 8);
+                            System.out.println(jsontime);
+                            time = LocalDate.parse(jsontime,
+                                    DateTimeFormatter.ofPattern("yyyyMMdd"));
+                        }else{
+                             time = LocalDate.parse(jsontime,
+                                    DateTimeFormatter.ofPattern("yyyyMMdd"));
+                        }
+
                     }
+                    System.out.println(time.toString());
                     imageDao.addImage(user, path,
                             jsonObject.get("name").toString(),
                             jsonObject.get("hospital").toString(),
                             jsonObject.get("type").toString(),
                             time);
+                    System.out.println("已存入数据库");
 ////                    LocalDate time = LocalDate.parse(str[3]);
 //                    LocalDate.parse(jsonObject.get("time").toString(),
 //                            DateTimeFormatter.ofPattern("yyyyMMdd"))
@@ -81,7 +118,7 @@ public class ImageServiceImpl implements ImageService {
             System.out.println("没有找到相对应的文件");
             return "error";
         }
-        System.out.println("已存入数据库");
+
         return "success";
 
     }
