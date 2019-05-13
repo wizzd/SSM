@@ -10,4 +10,7 @@
     <!--<typeAliases>-->
         <!--<typeAlias alias="User" type="com.yi.entity.UserDo"/>-->
     <!--</typeAliases>-->
+    <typeAliases>
+        <typeAlias alias="Image" type="com.yi.entity.ImageDo"/>
+    </typeAliases>
 </configuration>

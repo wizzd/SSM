@@ -1,7 +1,6 @@
 package com.yi.service;
 
 import com.yi.dao.UserDao;
-import com.yi.entity.UserDo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

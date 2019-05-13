@@ -1,0 +1,18 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yi.dao.ImageDao">
+    <select id="getImage" resultType="com.yi.entity.ImageDo">
+        select * from  images when  openId = #{0} and img = #{1}
+    </select>
+    <!--<insert id="addImage" >-->
+        <!--insert into images (openId,img,name,hospital,type,time) values (#{0}, #{1} , #{2} ,#{3} ,#{4} ,#{5} )-->
+    <!--</insert> -->
+    <insert id="addImage" >
+        insert into images (openId,img,name,hospital,type) values (#{0}, #{1} , #{2} ,#{3} ,#{4}  )
+    </insert>
+    <delete id="delectImage" >
+        delete FROM images WHERE  openId = #{0} and img = #{2}
+    </delete>
+</mapper>
+
