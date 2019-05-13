@@ -11,15 +11,20 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
 public class UpdataImage {
-   private static Pattern[] patterns =new Pattern[] {
-           Pattern.compile("([\\u4e00-\\u9fa5]{1,9}医院)"),
-           Pattern.compile("(科室|科别)"),
-           Pattern.compile("(检验科|标本种类|样本种类)")};
+    //TODO  分割职能
+    private static Pattern[] patterns = new Pattern[]{
+            Pattern.compile("(姓名:[\\u4e00-\\u9fa5]{1,3})"),
+            Pattern.compile("(科室:|科别:)[\\u4e00-\\u9fa5]{1,4}"),
+            Pattern.compile("(检验科:|标本种类:|样本种类:)[\\u4e00-\\u9fa5]{1,4}"),
+            Pattern.compile("(检验日期:[\\d]{8})"),
+            Pattern.compile("([\\u4e00-\\u9fa5]{1,9}医院)")
+    };
 //    private Logger logger = Logger.getLogger(GoodsController.class);
     @ResponseBody
     @RequestMapping("upload")
@@ -44,30 +49,28 @@ public class UpdataImage {
                     // 自定义的文件名称
                     String trueFileName =   String.valueOf(System.currentTimeMillis()) + fileName;;
                     // 设置存放图片文件的路径
-//                    String parent = realPath + "\\uploads";
-//                    File f = new File(parent);
-//                    if (f.exists()) {
-//                        f.mkdir();
-//                    }
                     path = realPath + "uploads\\" + trueFileName;
 
                     System.out.println("存放图片文件的路径:" + path);
                     file.transferTo(new File(path));
                     String json = Ocr.toString(path);
-                    System.out.println(json);
-//                    json.replaceAll
-                    JSONObject jsonObject = new JSONObject(json);
-                    String name = jsonObject.get("姓名").toString();
-                    System.out.println(name);
-                    String [] str = new String[3];
-                    for (int i = 0; i < 3; i++) {
+                    String [] str = new String[4];
+                    for (int i = 0; i < 5; i++) {
                         Matcher matcher = patterns[i].matcher(json);
                         matcher.find();
-                        str[i] = jsonObject.get(matcher.group()).toString();
-                      //  System.out.println(str[i]);
+                        str[i] = matcher.group();
+                        System.out.println(str[i]);
                     }
-                    String hospital = str[0];
-                    String typeProperty = str[1]+"//"+str[2];
+                    String [] tmp = new String[2];
+                    for (int i = 0; i < 3; i++) {
+                        String[] split = str[i].split(":");
+                        str[i] = split[1];
+                    }
+                    String name = str[0];
+                    String typeProperty = str[1]+str[2];
+                    LocalDate time = LocalDate.parse(str[3]);
+                    String hospital = str[4];
+//                    String typeProperty = str[1]+"//"+str[2];
                     //科别 科室  检验科 标本种类 样本种类
                     //医院
                     System.out.println("文件成功上传到指定目录下");
