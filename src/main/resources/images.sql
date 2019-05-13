@@ -1,6 +1,7 @@
 create database laboratory;
 use laboratory;
 -- auto-generated definition
+-- auto-generated definition
 create table images
 (
   img      varchar(100) not null,

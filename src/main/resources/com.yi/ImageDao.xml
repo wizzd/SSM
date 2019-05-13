@@ -9,7 +9,7 @@
         <!--insert into images (openId,img,name,hospital,type,time) values (#{0}, #{1} , #{2} ,#{3} ,#{4} ,#{5} )-->
     <!--</insert> -->
     <insert id="addImage" >
-        insert into images (openId,img,name,hospital,type) values (#{0}, #{1} , #{2} ,#{3} ,#{4}  )
+        insert into images (openId,img,name,hospital,type,time) values (#{0}, #{1} , #{2} ,#{3} ,#{4} , #{5}  )
     </insert>
     <delete id="delectImage" >
         delete FROM images WHERE  openId = #{0} and img = #{2}

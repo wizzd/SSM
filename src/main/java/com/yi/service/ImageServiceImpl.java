@@ -52,11 +52,20 @@ public class ImageServiceImpl implements ImageService {
                     String json = Analysis.getPoint(Ocr.toString(path).toString());
                     System.out.println("Analysis.getPoint的结果：  "+json);
                     JSONObject jsonObject = new JSONObject(json);
+                    String timeStr = jsonObject.get("time").toString();
+                    LocalDate time =null;
+                    if (timeStr.contains("-")) {
+                         time = LocalDate.parse(jsonObject.get("time").toString(),
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    }else {
+                         time = LocalDate.parse(jsonObject.get("time").toString(),
+                                DateTimeFormatter.ofPattern("yyyyMMdd"));
+                    }
                     imageDao.addImage(user, path,
                             jsonObject.get("name").toString(),
                             jsonObject.get("hospital").toString(),
-                            jsonObject.get("type").toString()
-                           );
+                            jsonObject.get("type").toString(),
+                            time);
 ////                    LocalDate time = LocalDate.parse(str[3]);
 //                    LocalDate.parse(jsonObject.get("time").toString(),
 //                            DateTimeFormatter.ofPattern("yyyyMMdd"))
@@ -72,6 +81,7 @@ public class ImageServiceImpl implements ImageService {
             System.out.println("没有找到相对应的文件");
             return "error";
         }
+        System.out.println("已存入数据库");
         return "success";
 
     }
