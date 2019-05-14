@@ -1,0 +1,22 @@
+<view class="container">
+  <view class="zan-panel-title">寄语</view>
+  <view class="zan-panel">
+    <view class='zan-font-14' style="padding: 15px;">
+      <text>关心生活，关注健康
+      </text>
+    </view>
+  </view>
+
+  <view class="zan-panel-title">联系我</view>
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view>邮箱：</view>
+      <view class='zan-text-underline zan-c-blue' data-index='{{email}}' bindtap="copyDataTap">{{email}}</view>
+    </view>
+    <view class="zan-cell">
+      <view>个人微信号：</view>
+      <view class='zan-text-underline zan-c-blue ' bindtap="copyDataTap" data-index='{{selfwechat}} '>{{selfwechat}}</view>
+    </view>
+  
+  </view>
+</view>

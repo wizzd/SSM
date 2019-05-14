@@ -1,0 +1,10 @@
+<view class="container">
+  <view class="zan-panel-title">关于这里</view>
+  <view class="zan-panel">
+    <view class='zan-font-14' style="padding: 15px;">
+      <text>化验单管理系统正在努力开发中
+      </text>
+    </view>
+  </view>
+
+</view>
