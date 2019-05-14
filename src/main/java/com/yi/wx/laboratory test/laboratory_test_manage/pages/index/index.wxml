@@ -8,7 +8,6 @@
             <view>申请获取以下权限</view>
             <text>获得你的公开信息(昵称，头像等)</text>
         </view>
-
         <button class='bottom' type='primary' open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="bindGetUserInfo">
             授权登录
         </button>
@@ -17,20 +16,27 @@
 </view>
 
 <view wx:else>
-    <view class='history-table-wrap'>
-    <view class="table">
-      <view class="tr">
-          <view class="th th1">姓名</view>
-          <view class="th th2">时间</view>
-          <view class="th th3">医院</view>
-          <view class="th th4">类型</view>
+<!-- <view wx:for="{{ite}}" wx:for-index="index" wx:for-item="item">
+{{index+1}}、{{item.title}}
+</view>  -->
+  <view class="tr">
+      <view class='history-table-wrap'>
+        <view class="table">
+           <view class="tr">
+              <view class="th th1">姓名</view>
+              <view class="th th2">时间</view>
+              <view class="th th3">医院</view>
+              <view class="th th4">类型</view>
+            </view>
+      
+          <view class="tr" wx:for="{{results}}" wx:for-index="index" wx:for-item="item">
+          
+            <view class="td td1">{{item.name}}</view>
+            <view class="td td2">{{item.time}}</view>
+            <view class="td td3">{{item.hospital}}</view>
+            <view class="td td4">{{item.type}}</view>
+          </view>
+          </view>
+        </view>
       </view>
-      <view class="tr" wx:for="{{15}}">
-          <view class="td td1">刘薇2</view>
-          <view class="td td2">2018/02/12</view>
-          <view class="td td3">北京大学第一医院</view>
-           <view class="td td4">儿科/静脉全血</view>
-      </view>
-    </view>
- </view>
 </view>

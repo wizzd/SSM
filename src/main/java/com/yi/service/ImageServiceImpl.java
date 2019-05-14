@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -50,46 +53,46 @@ public class ImageServiceImpl implements ImageService {
                     //Analysis 识别图片中的信息并转换成json字符  Ocr 进行图片识别
                     String s = Ocr.toString(path);
 //                    不能去"-" 对于 2015-1-12 来说 去杠后 难以分别2015 11 2 还是2015 1 12
-                    s=s.replaceAll("/", "-");
-                    s=s.replaceAll("_", ":");
+                    s = s.replaceAll("/", "-");
+                    s = s.replaceAll("_", ":");
                     String json = Analysis.getPoint(s);
 //                    System.out.println("Analysis.getPoint的结果：  " + json);
                     JSONObject jsonObject = new JSONObject(json);
                     String jsontime = jsonObject.get("time").toString();
-                    LocalDate time =LocalDate.parse("10000101",
+                    LocalDate time = LocalDate.parse("10000101",
                             DateTimeFormatter.ofPattern("yyyyMMdd"));
                     if (jsontime.contains("-")) {
-                        if (jsontime.length() == 8){
-                             time = LocalDate.parse(jsontime,
+                        if (jsontime.length() == 8) {
+                            time = LocalDate.parse(jsontime,
                                     DateTimeFormatter.ofPattern("yyyy-M-d"));
                         }
-                        if (jsontime.length() == 9){
-                            try{
-                                 time = LocalDate.parse(jsontime,
+                        if (jsontime.length() == 9) {
+                            try {
+                                time = LocalDate.parse(jsontime,
                                         DateTimeFormatter.ofPattern("yyyy-MM-d"));
-                            }catch (Exception e){
-                                try{
+                            } catch (Exception e) {
+                                try {
                                     time = LocalDate.parse(jsontime,
                                             DateTimeFormatter.ofPattern("yyyy-M-dd"));
-                                }catch (Exception e1){
-                                    try{
+                                } catch (Exception e1) {
+                                    try {
                                         time = LocalDate.parse(jsontime,
                                                 DateTimeFormatter.ofPattern("yyyyMM-dd"));
-                                    }catch (Exception e2){
+                                    } catch (Exception e2) {
                                         time = LocalDate.parse(jsontime,
                                                 DateTimeFormatter.ofPattern("yyyy-MMdd"));
                                     }
                                 }
                             }
                         }
-                    }else{
-                        if (jsontime.length()>=8){
+                    } else {
+                        if (jsontime.length() >= 8) {
                             jsontime = jsontime.substring(0, 8);
 //                            System.out.println(jsontime);
                             time = LocalDate.parse(jsontime,
                                     DateTimeFormatter.ofPattern("yyyyMMdd"));
-                        }else{
-                             time = LocalDate.parse(jsontime,
+                        } else {
+                            time = LocalDate.parse(jsontime,
                                     DateTimeFormatter.ofPattern("yyyyMMdd"));
                         }
 
@@ -97,9 +100,9 @@ public class ImageServiceImpl implements ImageService {
 //                    System.out.println(time.toString());
                     System.out.println(user);
                     System.out.println(path);
-                    System.out.println( jsonObject.get("name").toString());
-                    System.out.println( jsonObject.get("hospital").toString());
-                    System.out.println( jsonObject.get("type").toString());
+                    System.out.println(jsonObject.get("name").toString());
+                    System.out.println(jsonObject.get("hospital").toString());
+                    System.out.println(jsonObject.get("type").toString());
                     System.out.println(time);
                     imageDao.addImage(user, path,
                             jsonObject.get("name").toString(),
@@ -133,5 +136,33 @@ public class ImageServiceImpl implements ImageService {
         imageDao.delectImage(openId, img);
     }
 
+    @Override
+    public String selectListMap(String openId) {
+        List<Map<String, Object>> maps = imageDao.selectByOpenId(openId);
+        if (maps == null){
+            return "null";
+        }
+        Iterator<Map<String, Object>> iterator = maps.iterator();
+        StringBuffer s = new StringBuffer(200);
+        int count = 0;
+        s.append("[");
+        while (iterator.hasNext()) {
 
+            count++;
+            Map<String, Object> next = iterator.next();
+            String s1 = next.toString().replaceAll("=", "\":\"") ;
+            s1=s1.replaceAll("\\\\","\\\\\\\\");
+             s1 = s1.replaceAll("\\{", "\\{\"");
+             s1 = s1.replaceAll("\\}", "\"\\}");
+            s1 = s1.replaceAll(",", "\",\"");
+            s1+=",";
+            s.append(s1);
+        }
+        String s1 = s.substring(0, s.length() - 1)+"]";
+         s1 = s1.replaceAll("\\s", "");
+        if (s1.equals("]")) {
+            return "null";
+        }
+        return s1;
+    }
 }

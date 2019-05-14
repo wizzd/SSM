@@ -14,5 +14,8 @@
     <delete id="delectImage" >
         delete FROM images WHERE  openId = #{0} and img = #{2}
     </delete>
+    <select id="selectByOpenId" resultType="java.util.HashMap">
+        select img , name , hospital , type , time from images where  openId = #{0}
+    </select>
 </mapper>
 

@@ -5,7 +5,8 @@ App({
   globalData: {
     userInfo: null,
     openId: '',
-    
-    test :'test'
+  
+    test :'test',
+    ishasdata:false,
   }
 })
