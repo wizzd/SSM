@@ -7,17 +7,12 @@ Page({
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         isHide: false,
         results:new Array(2),
-    // ite: [
-    //           {
-    //                 "url": "http://127.0.0.1/1.flv",
-    //                 "title": "这是标题一"
-    //           },
-    //           {
-    //                 "url": "http://127.0.0.1/2.flv",
-    //                 "title": "这是标题二"
-    //           }
-    //     ]
     },
+ onShow: function(){
+    var that = this;
+    if(app.globalData.ishasdata)
+      that.getMessage()
+ },
   getMessage: function () {
     var that = this;  
     // 若已授权
@@ -35,11 +30,7 @@ Page({
           this.setData({
             results : res["data"]
           });      
-          console.log(that.data.results[0])
-          console.log(that.data.results[1].name)      
-          console.log(that.data.results[1].time)   
-          console.log(that.data.results[1].hospital)   
-          console.log(that.data.results[1].type)   
+          console.log(that.data.results[0]) 
         }
       });
       app.globalData.ishasdata = false
