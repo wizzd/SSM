@@ -16,27 +16,32 @@
 </view>
 
 <view wx:else>
-<!-- <view wx:for="{{ite}}" wx:for-index="index" wx:for-item="item">
-{{index+1}}、{{item.title}}
+<!-- <view wx:for="{{results}}" wx:for-index="index" wx:for-item="item">
+{{index+1}}、{{item.name}}
 </view>  -->
+
   <view class="tr">
-      <view class='history-table-wrap'>
-        <view class="table">
-           <view class="tr">
-              <view class="th th1">姓名</view>
-              <view class="th th2">时间</view>
-              <view class="th th3">医院</view>
-              <view class="th th4">类型</view>
-            </view>
+    <view class='history-table-wrap'>
+      <view class="table">
+          <view class="tr">
+            <view class="th th1">姓名</view>
+            <view class="th th2">时间</view>
+            <view class="th th3">医院</view>
+            <view class="th th4">类型</view>
+          </view>
       
           <view class="tr" wx:for="{{results}}" wx:for-index="index" wx:for-item="item">
-          
-            <view class="td td1">{{item.name}}</view>
-            <view class="td td2">{{item.time}}</view>
-            <view class="td td3">{{item.hospital}}</view>
-            <view class="td td4">{{item.type}}</view>
-          </view>
+            <view class="td td1" data-id="{{index}}"   bindtap ="doubleTap"  bindlongtap="longTap"  
+            bindtouchstart="touchStart" bindtouchend="touchEnd">{{item.name}}</view>
+            <view class="td td2" data-id="{{index}}" bindtap ="doubleTap"  bindlongtap="longTap" 
+            bindtouchstart="touchStart" bindtouchend="touchEnd">{{item.time}}</view>
+            <view class="td td3" data-id="{{index}}" bindtap ="doubleTap"  bindlongtap="longTap" 
+            bindtouchstart="touchStart" bindtouchend="touchEnd">{{item.hospital}}</view>
+            <view class="td td4" data-id="{{index}}" bindtap ="doubleTap" bindlongtap="longTap" 
+            bindtouchstart="touchStart" bindtouchend="touchEnd">{{item.type}}</view>
           </view>
         </view>
       </view>
+    </view> 
+
 </view>

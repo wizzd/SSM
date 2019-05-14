@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,10 +22,17 @@ public class ImageController {
     }
     @ResponseBody
     @RequestMapping("/delect")
-    public void  delect(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public void  delect(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String openId = request.getParameter("openId");
         String img = request.getParameter("img");
-        imageService.delectImage(openId,img);
+        imageService.delectImage(openId, img);
+        File file = new File(img);
+        if (file.isFile() && file.exists()) {
+            Boolean succeedDelete = file.delete();
+            if (succeedDelete) {
+                System.out.println("删除单个文件目标图片成功！");
+            }
+        }
     }
     @RequestMapping("/getMessage")
     public void getMessage(HttpServletRequest request,HttpServletResponse response)throws Exception{

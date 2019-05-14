@@ -75,13 +75,11 @@ Page({
         name: 'file',
         formData: {
           'user': da
-          //  'user':'yi'
         },
         success: function (res) {
           console.log(res);
           var data = res.data
           console.log(data)
-          //do something
         }
       });
     }

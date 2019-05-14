@@ -8,6 +8,23 @@ Page({
         isHide: false,
         results:new Array(2),
     },
+  // 触摸开始时间
+  touchStartTime: 0,
+  // 触摸结束时间
+  touchEndTime: 0,
+  // 最后一次单击事件点击发生时间
+  lastTapTime: 0,
+  // 单击事件点击后要触发的函数
+  lastTapTimeoutFunc: null, 
+  // 按钮触摸开始触发的事件
+  touchStart: function (e) {
+    this.touchStartTime = e.timeStamp
+  },
+
+  // 按钮触摸结束触发的事件
+  touchEnd: function (e) {
+    this.touchEndTime = e.timeStamp
+  },
  onShow: function(){
     var that = this;
     if(app.globalData.ishasdata)
@@ -30,10 +47,66 @@ Page({
           this.setData({
             results : res["data"]
           });      
-          console.log(that.data.results[0]) 
+          // console.log(that.data.results[0]) 
         }
       });
       app.globalData.ishasdata = false
+    }
+  },
+  /// 长按--删除
+  longTap: function (event) {
+    var that = this;
+    var id = event.currentTarget.dataset.id;
+    wx.showModal({
+      title: '长按',
+      content: '是否要删除该图片',
+      success(res) {
+        if (res.confirm) {
+          wx.request({
+            url: 'http://localhost:8080/imges/delect',
+            data: {
+              openId: app.globalData.openId,
+              img: that.data.results[id].img
+            },
+            header: {
+              'content-type': 'application/json' //默认值
+            },
+            success: res => {
+              this.setData({
+                results: res["data"]
+              });
+            }
+          });
+          getApp().globalData.ishasdata = true
+        }
+        that.onShow()
+      }
+    })
+  
+    
+  },
+  // 双击--查看图片
+  doubleTap :function(event){
+    var that = this
+    // 控制点击事件在350ms内触发，加这层判断是为了防止长按时会触发点击事件
+    if (that.touchEndTime - that.touchStartTime < 350) {
+      // 当前点击的时间
+      var currentTime = event.timeStamp
+      var lastTapTime = that.lastTapTime
+      // 更新最后一次点击时间
+      that.lastTapTime = currentTime
+      // 如果两次点击时间在300毫秒内，则认为是双击事件
+      if (currentTime - lastTapTime < 300) {
+        console.log("double tap")
+        // 成功触发双击事件时，取消单击事件的执行
+        clearTimeout(that.lastTapTimeoutFunc);
+        var id = event.currentTarget.dataset.id;
+        console.log(this.data.results[id].img)
+        wx.previewImage({
+          current: this.data.results[id].img, // 当前显示图片的http链接
+          urls: [] // 需要预览的图片http链接列表
+        })
+      }
     }
   },
     onLoad: function() {
