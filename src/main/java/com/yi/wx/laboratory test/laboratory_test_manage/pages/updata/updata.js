@@ -6,7 +6,13 @@ Page({
    */
   data: {
     photos: "",
-   
+    disabled: false,
+    tmp : "false",
+  },
+  setDisabled: function (e) {
+    this.setData({
+      disabled: !this.data.disabled
+    })
   },
   /**
    * 选择照片
@@ -30,20 +36,56 @@ Page({
   },
   uploadImg: function () {
     var that = this
+    var flag = true
     var da = getApp().globalData.openId;
-    wx.uploadFile({
-      url: 'http://localhost:8080/upload', //仅为示例，非真实的接口地址
-      filePath: that.data.photos[0],
-      name: 'file',
-      formData: {
-        'user': da
-      //  'user':'yi'
-      },
-      success: function (res) {
-        var data = res.data
-        console.log(data)
-        //do something
-      }
-    });
+    var photopath = that.data.photos[0]
+    if (!photopath){
+      flag = false
+      wx.showToast({
+        title: '未选择图片',
+        icon: 'none',
+        duration: 2000
+      });
+      console.log("文件不能为空");
+    }
+    else{
+       if (that.data.tmp == "false") {
+         that.setData({
+           tmp: photopath
+         })
+       } 
+       else {
+         if (that.data.tmp != photopath){
+           that.setData({
+             tmp: photopath
+           })
+          }
+          else{
+          flag = false
+           wx.showToast({
+             title: '请不要重复提交',
+             icon: 'none',
+             duration: 2000
+           });
+          }
+        }
+     }
+    if(flag){
+      wx.uploadFile({
+        url: 'http://localhost:8080/upload', //仅为示例，非真实的接口地址
+        filePath: that.data.photos[0],
+        name: 'file',
+        formData: {
+          'user': da
+          //  'user':'yi'
+        },
+        success: function (res) {
+          console.log(res);
+          var data = res.data
+          console.log(data)
+          //do something
+        }
+      });
+    }
     }
 })

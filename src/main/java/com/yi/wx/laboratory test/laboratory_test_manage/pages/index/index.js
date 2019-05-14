@@ -7,7 +7,35 @@ Page({
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
         isHide: false
     },
-
+  onShow: function () {
+    // 若已授权
+    if (!isHide){
+      wx.request({
+        url: 'http://localhost:8080/image/',
+        data: {
+          code: res.code,
+        },
+        header: {
+          'content-type': 'application/json' //默认值
+        },
+        success: res => {
+          console.log("用户的openid:" + res);
+        }
+      });
+    }
+    wx.request({
+      url: 'http://localhost:8080/wxlogin',
+      data: {
+        code: res.code,
+      },
+      header: {
+        'content-type': 'application/json' //默认值
+      },
+      success: res => {
+        console.log("用户的openid:" + res);
+      }
+    });
+  },
     onLoad: function() {
         var that = this;  
         console.log('授权');     
@@ -20,19 +48,16 @@ Page({
                     wx.getUserInfo({                      
                         success: function(res) {                  
                             // 用户已经授权过,不需要显示授权页面,所以不需要改变 isHide 的值
-                            // 我这里实现的是在用户授权成功后，调用微信的 wx.login 接口，从而获取code
+                            // 在用户授权成功后，调用微信的 wx.login 接口，从而获取code
                             wx.login({ 
                                 success: res => {
                                     // 获取到用户的 code 之后：res.code
                                     console.log("用户的code:" + res.code);
-                                    // 可以传给后台，再经过解析获取用户的 openid
-                                    // 或者可以直接使用微信的提供的接口直接获取 openid ，方法如下：
+                                    // 传给后台，再经过解析获取用户的 openid
                                     wx.request({
                                       url: 'http://localhost:8080/wxlogin',
                                       data:{
                                         code:res.code,
-                                        // name:app.data.userInfo.name,
-                                        // avtrul:app.data.userInfo.avatarUrl
                                       },
                                       header: {
                                         'content-type': 'application/json' //默认值
@@ -54,7 +79,6 @@ Page({
                     });
                 }
             }
-          //  console.log('shibai');
         });
     },
     bindGetUserInfo:function(res) {

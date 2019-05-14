@@ -17,5 +17,20 @@
 </view>
 
 <view wx:else>
-    <view></view>
+    <view class='history-table-wrap'>
+    <view class="table">
+      <view class="tr">
+          <view class="th th1">姓名</view>
+          <view class="th th2">时间</view>
+          <view class="th th3">医院</view>
+          <view class="th th4">类型</view>
+      </view>
+      <view class="tr" wx:for="{{15}}">
+          <view class="td td1">刘薇2</view>
+          <view class="td td2">2018/02/12</view>
+          <view class="td td3">北京大学第一医院</view>
+           <view class="td td4">儿科/静脉全血</view>
+      </view>
+    </view>
+ </view>
 </view>

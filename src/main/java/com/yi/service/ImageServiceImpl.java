@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -50,10 +49,11 @@ public class ImageServiceImpl implements ImageService {
                     file.transferTo(new File(path));
                     //Analysis 识别图片中的信息并转换成json字符  Ocr 进行图片识别
                     String s = Ocr.toString(path);
-//                    不能去 - 对于 2015-1-12 来说 去杠后 难以分别2015 11 2 还是2015 1 12
+//                    不能去"-" 对于 2015-1-12 来说 去杠后 难以分别2015 11 2 还是2015 1 12
                     s=s.replaceAll("/", "-");
+                    s=s.replaceAll("_", ":");
                     String json = Analysis.getPoint(s);
-                    System.out.println("Analysis.getPoint的结果：  " + json);
+//                    System.out.println("Analysis.getPoint的结果：  " + json);
                     JSONObject jsonObject = new JSONObject(json);
                     String jsontime = jsonObject.get("time").toString();
                     LocalDate time =LocalDate.parse("10000101",
@@ -69,12 +69,10 @@ public class ImageServiceImpl implements ImageService {
                                         DateTimeFormatter.ofPattern("yyyy-MM-d"));
                             }catch (Exception e){
                                 try{
-
                                     time = LocalDate.parse(jsontime,
                                             DateTimeFormatter.ofPattern("yyyy-M-dd"));
                                 }catch (Exception e1){
                                     try{
-
                                         time = LocalDate.parse(jsontime,
                                                 DateTimeFormatter.ofPattern("yyyyMM-dd"));
                                     }catch (Exception e2){
@@ -87,7 +85,7 @@ public class ImageServiceImpl implements ImageService {
                     }else{
                         if (jsontime.length()>=8){
                             jsontime = jsontime.substring(0, 8);
-                            System.out.println(jsontime);
+//                            System.out.println(jsontime);
                             time = LocalDate.parse(jsontime,
                                     DateTimeFormatter.ofPattern("yyyyMMdd"));
                         }else{
@@ -96,29 +94,31 @@ public class ImageServiceImpl implements ImageService {
                         }
 
                     }
-                    System.out.println(time.toString());
+//                    System.out.println(time.toString());
+                    System.out.println(user);
+                    System.out.println(path);
+                    System.out.println( jsonObject.get("name").toString());
+                    System.out.println( jsonObject.get("hospital").toString());
+                    System.out.println( jsonObject.get("type").toString());
+                    System.out.println(time);
                     imageDao.addImage(user, path,
                             jsonObject.get("name").toString(),
                             jsonObject.get("hospital").toString(),
                             jsonObject.get("type").toString(),
                             time);
                     System.out.println("已存入数据库");
-////                    LocalDate time = LocalDate.parse(str[3]);
-//                    LocalDate.parse(jsonObject.get("time").toString(),
-//                            DateTimeFormatter.ofPattern("yyyyMMdd"))
                 } else {
                     System.out.println("不是我们想要的文件类型,请按要求重新上传");
-                    return "error";
+                    return "typeerror";
                 }
             } else {
                 System.out.println("文件类型为空");
-                return "error";
+                return "filenull";
             }
         } else {
             System.out.println("没有找到相对应的文件");
-            return "error";
+            return "notfind";
         }
-
         return "success";
 
     }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 @RestController
 @Controller
@@ -24,13 +25,14 @@ public class UpdataImageController {
         this.imageService = imageService;
     }
 
-
-
     @ResponseBody
     @RequestMapping("upload")
-    public void upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
-
-        imageService.addImage(request,file);
+    public void upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        String message = imageService.addImage(request, file);
+        response.getWriter().print(message);
+        response.setHeader("data",message);
+//        response.setHeader("return", message);
     }
 
 }
