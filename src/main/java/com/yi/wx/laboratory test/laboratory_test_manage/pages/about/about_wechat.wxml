@@ -2,7 +2,9 @@
   <view class="zan-panel-title">关于这里</view>
   <view class="zan-panel">
     <view class='zan-font-14' style="padding: 15px;">
-      <text>化验单管理系统正在努力开发中
+      <text>
+      自动识别化验单上的基本信息
+      管理页面：长按删除 双击显示
       </text>
     </view>
   </view>

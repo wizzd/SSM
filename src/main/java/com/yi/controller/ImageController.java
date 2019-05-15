@@ -26,13 +26,6 @@ public class ImageController {
         String openId = request.getParameter("openId");
         String img = request.getParameter("img");
         imageService.delectImage(openId, img);
-        File file = new File(img);
-        if (file.isFile() && file.exists()) {
-            Boolean succeedDelete = file.delete();
-            if (succeedDelete) {
-                System.out.println("删除单个文件目标图片成功！");
-            }
-        }
     }
     @RequestMapping("/getMessage")
     public void getMessage(HttpServletRequest request,HttpServletResponse response)throws Exception{

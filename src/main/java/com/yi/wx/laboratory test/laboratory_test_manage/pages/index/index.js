@@ -103,8 +103,17 @@ Page({
         var id = event.currentTarget.dataset.id;
         console.log(this.data.results[id].img)
         wx.previewImage({
+          // current: images/imgtest.jpg, 
+          // urls: [images/imgtest.jpg], 
           current: this.data.results[id].img, // 当前显示图片的http链接
-          urls: [] // 需要预览的图片http链接列表
+          urls: [this.data.results[id].img], // 需要预览的图片http链接列表
+          success:function(res){
+            console.log(res)
+            console.log("show img success")
+            wx.navigateTo({
+              url: '../index/index'
+            })
+          }
         })
       }
     }

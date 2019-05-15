@@ -26,7 +26,7 @@ public class UpdataImageController {
     }
 
     @ResponseBody
-    @RequestMapping("upload")
+    @RequestMapping("/upload")
     public void upload(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         String message = imageService.addImage(request, file);

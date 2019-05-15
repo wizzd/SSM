@@ -22,6 +22,8 @@ import java.util.Map;
 @Service
 public class ImageServiceImpl implements ImageService {
     private ImageDao imageDao;
+    private String realPath;
+    private static String url = "http://localhost:8080//";
 
     @Autowired
     public void setImageDao(ImageDao imageDao) {
@@ -43,11 +45,12 @@ public class ImageServiceImpl implements ImageService {
             if (type != null) {
                 if ("GIF".equals(type.toUpperCase()) || "PNG".equals(type.toUpperCase()) || "JPG".equals(type.toUpperCase())) {
                     // 项目在容器中实际发布运行的根路径
-                    String realPath = request.getSession().getServletContext().getRealPath("/");
+                     realPath = request.getSession().getServletContext().getRealPath("/");
                     // 自定义的文件名称
                     String trueFileName = String.valueOf(System.currentTimeMillis()) + fileName;
                     // 设置存放图片文件的路径
                     path = realPath + "uploads\\" + trueFileName;
+                    String imgPath = url+"uploads//" + trueFileName;
                     System.out.println("文件成功上传到指定目录下 存放图片文件的路径:" + path);
                     file.transferTo(new File(path));
                     //Analysis 识别图片中的信息并转换成json字符  Ocr 进行图片识别
@@ -99,12 +102,12 @@ public class ImageServiceImpl implements ImageService {
                     }
 //                    System.out.println(time.toString());
                     System.out.println(user);
-                    System.out.println(path);
+                    System.out.println(imgPath);
                     System.out.println(jsonObject.get("name").toString());
                     System.out.println(jsonObject.get("hospital").toString());
                     System.out.println(jsonObject.get("type").toString());
                     System.out.println(time);
-                    imageDao.addImage(user, path,
+                    imageDao.addImage(user, imgPath,
                             jsonObject.get("name").toString(),
                             jsonObject.get("hospital").toString(),
                             jsonObject.get("type").toString(),
@@ -134,6 +137,14 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void delectImage(String openId, String img) {
         imageDao.delectImage(openId, img);
+        String real = img.replace(url,realPath);
+        File file = new File(real);
+        if (file.isFile() && file.exists()) {
+            Boolean succeedDelete = file.delete();
+            if (succeedDelete) {
+                System.out.println("成功删除目标图片！");
+            }
+        }
     }
 
     @Override
