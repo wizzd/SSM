@@ -5,8 +5,16 @@ Page({
     //  userInfo: app.globalData.userInfo,
         //判断小程序的API，回调，参数，组件等是否在当前版本可用。
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
-        isHide: false,
-        results:new Array(2),
+      touch_status_code:0,
+      sort_status_code:0,
+      isHide: false,
+      results:new Array(2),
+      sorticon:"/images/icon/sort.png",
+      sortdownicon:"/images/icon/sort-down.png",
+      sortupicon:"/images/icon/sort-up.png",
+      // imageurl: ["/images/icon/sort.png", "/images/icon/sort.png", "/images/icon/sort.png", "/images/icon/sort.png"]
+      imageurl: [],
+      
     },
   // 触摸开始时间
   touchStartTime: 0,
@@ -20,15 +28,88 @@ Page({
   touchStart: function (e) {
     this.touchStartTime = e.timeStamp
   },
-
   // 按钮触摸结束触发的事件
   touchEnd: function (e) {
     this.touchEndTime = e.timeStamp
   },
+  parese_sort_img_sort_status : function(e){
+    var that = this
+    if (e == 0) //e == 0即初始化
+      for(var i = 0; i < 4; i++){
+        var a1 = "imageurl[" + i + "]"
+        that.setData({
+          [a1]: that.data.sorticon,
+        })
+    } 
+   else{
+     var i = Math.log2(e)
+      console.log("-------------------")
+     var newImg = "imageurl[" + i + "]"
+      if (e == that.data.sort_status_code){
+        //记录该位置已经是第二次变化了
+        that.setData({
+          sort_status_code: ~e&15,
+          [newImg]: that.data.sortdownicon,
+        })
+      
+      }else{
+        if ((~e & 15) != that.data.sort_status_code){
+          var d = that.data.sort_status_code
+          if (d){
+          var c = (d & 1 )+ ((d >> 1) & 1) + ((d >> 2) & 1)
+         
+          if(c>1)
+            var previous = "imageurl[" + Math.log2(15 - d) + "]" 
+          else 
+            var previous = "imageurl[" + Math.log2( d) + "]"
+           
+            that.setData({
+              [previous]: that.data.sorticon,
+            })
+          }
+          // console.log(previous)
+          that.setData({
+             sort_status_code: e ,
+            [newImg]: that.data.sortupicon,
+         })
+       
+        }
+        else {
+
+          //  记录上一次变化的位置
+          that.setData({
+            sort_status_code: 0,
+            [newImg]: that.data.sorticon,
+          })
+          console.log("D  e: " + e + "  sort_status_code:  " + that.data.sort_status_code)
+        
+        }
+      }
+     
+     
+   }
+    
+  },
+  // 单击
+  tap: function (e) {
+    var that = this
+    var tmp = e.currentTarget.dataset.id
+    that.parese_sort_img_sort_status(tmp)
+    // console.log(that.data.imageurl[e.currentTarget.dataset.id])
+    
+ 
+    that.lastTapTimeoutFunc = setTimeout(function () {
+      // console.log("tap")
+
+    }, 300);
+
+  },
+
  onShow: function(){
     var that = this;
     if(app.globalData.ishasdata)
       that.getMessage()
+    
  },
   getMessage: function () {
     var that = this;  
@@ -53,7 +134,7 @@ Page({
       app.globalData.ishasdata = false
     }
   },
-  /// 长按--删除
+  // 长按--删除
   longTap: function (event) {
     var that = this;
     var id = event.currentTarget.dataset.id;
@@ -85,7 +166,7 @@ Page({
   
     
   },
-  // 双击--查看图片
+  // 双击时touch_status_code状态码为2
   doubleTap :function(event){
     var that = this
     // 控制点击事件在350ms内触发，加这层判断是为了防止长按时会触发点击事件
@@ -100,26 +181,31 @@ Page({
         console.log("double tap")
         // 成功触发双击事件时，取消单击事件的执行
         clearTimeout(that.lastTapTimeoutFunc);
-        var id = event.currentTarget.dataset.id;
-        console.log(this.data.results[id].img)
-        wx.previewImage({
-          // current: images/imgtest.jpg, 
-          // urls: [images/imgtest.jpg], 
-          current: this.data.results[id].img, // 当前显示图片的http链接
-          urls: [this.data.results[id].img], // 需要预览的图片http链接列表
-          success:function(res){
-            console.log(res)
-            console.log("show img success")
-            wx.navigateTo({
-              url: '../index/index'
-            })
-          }
-        })
+        that.data.touch_status_code=2
       }
     }
   },
+  // showImg 显示图片
+  showImg:function(event){
+    var that = this
+    that.doubleTap(event)
+    if (that.data.touch_status_code ==2){
+      var id = event.currentTarget.dataset.id;
+      console.log(this.data.results[id].img)
+      wx.previewImage({
+        // current: "images/wx_login.png", //因为是静态文件的路径 根据文档要求需要http连接所以不能显示 但可以掩饰
+        // urls: ["images/wx_login.png"], 
+        current: this.data.results[id].img, // 当前显示图片的http链接
+        urls: [this.data.results[id].img], // 需要预览的图片http链接列表
+
+      })
+      that.data.touch_status_code = 0
+
+    }
+  },
     onLoad: function() {
-        var that = this;  
+        var that = this;
+      that.parese_sort_img_sort_status(0)
         console.log('授权');     
         // 查看是否授权
         wx.getSetting({     
@@ -159,6 +245,7 @@ Page({
         });
     },
     bindGetUserInfo:function(res) {
+      var that = this
         if (res.detail.userInfo) {
             app.globalData.userInfo=res.detail.userInfo            
             var that = this;

@@ -69,3 +69,25 @@
   font-size: 20rpx;
   color: #ec9480;
 }
+
+.sort{
+  
+  vertical-align: middle;
+  width: 18rpx;
+  height: 30rpx;
+  margin-left:6rpx;
+}
+.layout_horizontal{
+  height: 100rpx;
+  display: flex;
+  /*row 横向  column 列表  */
+  flex-direction: row;
+}
+
+/*纵向布局  */
+.layout_vertical{
+  height: 100rpx;
+  display: flex;
+  /*row 横向  column 列表  */
+  flex-direction: column;
+}
