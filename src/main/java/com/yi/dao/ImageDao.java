@@ -12,4 +12,6 @@ public interface ImageDao {
    ImageDo getImage(String openId, String img);
    void delectImage(String openId,String img);
    List<Map<String,Object>> selectByOpenId(String openId);
+   List<Map<String,Object>> orderByTime(String openId,int i);
+
 }

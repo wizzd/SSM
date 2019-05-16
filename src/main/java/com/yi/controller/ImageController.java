@@ -32,7 +32,7 @@ public class ImageController {
         response.setContentType("application/json;charset=UTF-8");
         String openId = request.getParameter("openId");
         String message = imageService.selectListMap(openId);
-        System.out.println(message);
+//        System.out.println(message);
         response.getWriter().print(message);
 //        response.setHeader("data",message);
 //        Now you can provide attr `wx:key` for a `wx:for` to improve performance.
@@ -41,8 +41,10 @@ public class ImageController {
     public void sortMessage(HttpServletRequest request,HttpServletResponse response)throws Exception{
         response.setContentType("application/json;charset=UTF-8");
         String openId = request.getParameter("openId");
-        String message = imageService.selectListMap(openId);
-        System.out.println(message);
+        String id = request.getParameter("id");
+        String order = request.getParameter("order");
+        String message = imageService.order(openId,id,Integer.parseInt(order));
+//        System.out.println(message);
         response.getWriter().print(message);
 //        response.setHeader("data",message);
 //        Now you can provide attr `wx:key` for a `wx:for` to improve performance.

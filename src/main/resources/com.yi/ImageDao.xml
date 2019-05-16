@@ -17,5 +17,11 @@
     <select id="selectByOpenId" resultType="java.util.HashMap">
         select img , name , hospital , type , time from images where  openId = #{0}
     </select>
+    <select id="orderByTime" resultType="java.util.HashMap" statementType="CALLABLE">
+{
+
+      call sortByTime( #{1} , #{0} )
+}
+    </select>
 </mapper>
 

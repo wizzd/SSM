@@ -85,11 +85,18 @@ Page({
     var that = this
     var tmp = e.currentTarget.dataset.id
     var sub = that.data.array[Math.log2(tmp)]
+    if (that.data.imageurl[Math.log2(tmp)] == that.data.sortupicon){
+      var order = "0"
+    }
+    else
+    var order = "1"
+     
     wx.request({
       url: 'http://localhost:8080/imges/sortMessage',
       data: {
         openId: app.globalData.openId,
-        id:sub
+        id:sub,
+        order : order
       },
       header: {
         'content-type': 'application/json' //默认值
@@ -97,15 +104,13 @@ Page({
       success: res => {
         this.setData({
           results: res["data"]
-        });
-        // console.log(that.data.results[0]) 
+        });    
       }
     });
     that.lastTapTimeoutFunc = setTimeout(function () {
       
       that.parese_sort_img_sort_status(tmp)
     }, 200);
-
   },
 
  onShow: function(){
@@ -114,14 +119,12 @@ Page({
      that.getMessage()
    }, 1500);
     
-      that.getMessage()
+    that.getMessage()
     
  },
   getMessage: function () {
     var that = this;  
     // 若已授权
-    
-      console.log("进入getMessage")
       wx.request({
         url: 'http://localhost:8080/imges/getMessage',
         data: {
@@ -136,9 +139,7 @@ Page({
           });      
           // console.log(that.data.results[0]) 
         }
-      });
-     
-    
+      });      
   },
   // 长按--删除
   longTap: function (event) {
@@ -164,8 +165,6 @@ Page({
               that.onShow()
             }
           });
-        
-        
         }
         that.onShow()
       }

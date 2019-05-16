@@ -14,4 +14,10 @@
     <update id="updata">
         update user set name=#{1} , avataUrl = #{2}  where openId =  #{0}
     </update>
+    <select id="orderAscByTime" >
+        select * from images order by time asc
+    </select>
+    <select id="orderDescByTime" >
+        select * from images order by time desc
+    </select>
 </mapper>

@@ -13,23 +13,20 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.Collator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ImageServiceImpl implements ImageService {
     private ImageDao imageDao;
     private String realPath;
     private static String url = "http://localhost:8080//";
-
     @Autowired
     public void setImageDao(ImageDao imageDao) {
         this.imageDao = imageDao;
     }
-
     @Override
     public String addImage(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         request.setCharacterEncoding("UTF-8");
@@ -45,12 +42,12 @@ public class ImageServiceImpl implements ImageService {
             if (type != null) {
                 if ("GIF".equals(type.toUpperCase()) || "PNG".equals(type.toUpperCase()) || "JPG".equals(type.toUpperCase())) {
                     // 项目在容器中实际发布运行的根路径
-                     realPath = request.getSession().getServletContext().getRealPath("/");
+                    realPath = request.getSession().getServletContext().getRealPath("/");
                     // 自定义的文件名称
                     String trueFileName = String.valueOf(System.currentTimeMillis()) + fileName;
                     // 设置存放图片文件的路径
                     path = realPath + "uploads\\" + trueFileName;
-                    String imgPath = url+"uploads//" + trueFileName;
+                    String imgPath = url + "uploads//" + trueFileName;
                     System.out.println("文件成功上传到指定目录下 存放图片文件的路径:" + path);
                     file.transferTo(new File(path));
                     //Analysis 识别图片中的信息并转换成json字符  Ocr 进行图片识别
@@ -128,16 +125,14 @@ public class ImageServiceImpl implements ImageService {
         return "success";
 
     }
-
     @Override
     public ImageDo getImage(String openId, String img) {
         return imageDao.getImage(openId, img);
     }
-
     @Override
     public void delectImage(String openId, String img) {
         imageDao.delectImage(openId, img);
-        String real = img.replace(url,realPath);
+        String real = img.replace(url, realPath);
         File file = new File(real);
         if (file.isFile() && file.exists()) {
             Boolean succeedDelete = file.delete();
@@ -146,13 +141,7 @@ public class ImageServiceImpl implements ImageService {
             }
         }
     }
-
-    @Override
-    public String selectListMap(String openId) {
-        List<Map<String, Object>> maps = imageDao.selectByOpenId(openId);
-        if (maps == null){
-            return "null";
-        }
+    private String listToString(List<Map<String, Object>> maps) {
         Iterator<Map<String, Object>> iterator = maps.iterator();
         StringBuffer s = new StringBuffer(200);
         int count = 0;
@@ -161,19 +150,55 @@ public class ImageServiceImpl implements ImageService {
 
             count++;
             Map<String, Object> next = iterator.next();
-            String s1 = next.toString().replaceAll("=", "\":\"") ;
-            s1=s1.replaceAll("\\\\","\\\\\\\\");
-             s1 = s1.replaceAll("\\{", "\\{\"");
-             s1 = s1.replaceAll("\\}", "\"\\}");
+            String s1 = next.toString().replaceAll("=", "\":\"");
+            s1 = s1.replaceAll("\\\\", "\\\\\\\\");
+            s1 = s1.replaceAll("\\{", "\\{\"");
+            s1 = s1.replaceAll("\\}", "\"\\}");
             s1 = s1.replaceAll(",", "\",\"");
-            s1+=",";
+            s1 += ",";
             s.append(s1);
         }
-        String s1 = s.substring(0, s.length() - 1)+"]";
-         s1 = s1.replaceAll("\\s", "");
+        String s1 = s.substring(0, s.length() - 1) + "]";
+        s1 = s1.replaceAll("\\s", "");
         if (s1.equals("]")) {
             return "null";
         }
         return s1;
     }
+    @Override
+    public String selectListMap(String openId) {
+        List<Map<String, Object>> maps = imageDao.selectByOpenId(openId);
+        if (maps == null) {
+            return "null";
+        }
+        return listToString(maps);
+    }
+    private  void   listSortByPinyin(String property, List<Map<String, Object>> maps){
+        Collections.sort(maps, new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                return Collator.getInstance(Locale.CHINESE).compare(o1.get(property),o2.get(property));
+            }
+        });
+    }
+    @Override
+    public String order(String openId, String id, int i) {
+//        System.out.println(imageDao.orderByTime("osqKW5Mcw8Nc24zfu4MvQ1X6qDLQ", 0));
+        System.out.println("order");
+        String message = "";
+        switch (id) {
+            case "time":
+                List<Map<String, Object>> maps = imageDao.orderByTime(openId, i);
+                System.out.println("openId:  "+openId);
+               message= listToString(maps);
+                break;
+                default:
+                    List<Map<String, Object>> maps1 = imageDao.selectByOpenId(openId);
+                    listSortByPinyin(id, maps1);
+                    message = listToString( maps1);
+        }
+        return message;
+    }
+
+
 }

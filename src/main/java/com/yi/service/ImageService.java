@@ -17,5 +17,5 @@ public interface ImageService {
     ImageDo getImage(String openId, String img);
     void delectImage(String openId,String img);
     String selectListMap(String openId);
-
+    String order(String openId, String id,int i);
 }
