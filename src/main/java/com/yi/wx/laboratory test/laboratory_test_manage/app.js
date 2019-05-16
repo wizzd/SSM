@@ -7,6 +7,6 @@ App({
     openId: '',
   
     test :'test',
-    ishasdata:false,
+
   }
 })

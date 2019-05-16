@@ -68,7 +68,7 @@ Page({
         }
      }
     if(flag){
-      getApp().globalData.ishasdata = true
+      
       wx.uploadFile({
         url: 'http://localhost:8080/upload', //仅为示例，非真实的接口地址
         filePath: that.data.photos[0],

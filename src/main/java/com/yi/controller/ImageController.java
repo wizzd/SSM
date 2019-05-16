@@ -37,5 +37,14 @@ public class ImageController {
 //        response.setHeader("data",message);
 //        Now you can provide attr `wx:key` for a `wx:for` to improve performance.
     }
-
+    @RequestMapping("/sortMessage")
+    public void sortMessage(HttpServletRequest request,HttpServletResponse response)throws Exception{
+        response.setContentType("application/json;charset=UTF-8");
+        String openId = request.getParameter("openId");
+        String message = imageService.selectListMap(openId);
+        System.out.println(message);
+        response.getWriter().print(message);
+//        response.setHeader("data",message);
+//        Now you can provide attr `wx:key` for a `wx:for` to improve performance.
+    }
 }
