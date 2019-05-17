@@ -12,7 +12,7 @@ public class Analysis {
             Pattern.compile("(科室|科别|室):?;?[\\u4e00-\\u9fa5]{1,9}"),
             Pattern.compile("(样本类型|标本种类|样本种类|标本类型|检验科:):?;?[\\u4e00-\\u9fa5]{2,4}"),
             Pattern.compile("(样本编号|检验日期|采样日期|采样时间|采集时间|接收时间|送检时间|报告时间)\\D?[\\d|-]{8,10}"),
-            Pattern.compile("([\\u4e00-\\u9fa5\\d]{3,20}院)")
+            Pattern.compile("([\\u4e00-\\u9fa5\\d]{4,20}院)")
     };
     private static Pattern test = Pattern.compile("[\\u4e00-\\u9fa5]");
     private static String[] s = new String[]{"姓名", "科室", "样本类型", "采样日期", "医院"};

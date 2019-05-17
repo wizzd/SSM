@@ -44,7 +44,7 @@ public class ImageController {
         String id = request.getParameter("id");
         String order = request.getParameter("order");
         String message = imageService.order(openId,id,Integer.parseInt(order));
-//        System.out.println(message);
+        System.out.println(message);
         response.getWriter().print(message);
 //        response.setHeader("data",message);
 //        Now you can provide attr `wx:key` for a `wx:for` to improve performance.

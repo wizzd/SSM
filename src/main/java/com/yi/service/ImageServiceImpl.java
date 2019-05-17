@@ -141,6 +141,7 @@ public class ImageServiceImpl implements ImageService {
             }
         }
     }
+
     private String listToString(List<Map<String, Object>> maps) {
         Iterator<Map<String, Object>> iterator = maps.iterator();
         StringBuffer s = new StringBuffer(200);
@@ -173,11 +174,19 @@ public class ImageServiceImpl implements ImageService {
         }
         return listToString(maps);
     }
-    private  void   listSortByPinyin(String property, List<Map<String, Object>> maps){
+
+    private  void   listSortByPinyin(String property, List<Map<String, Object>> maps,int i){
         Collections.sort(maps, new Comparator<Map<String, Object>>() {
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-                return Collator.getInstance(Locale.CHINESE).compare(o1.get(property),o2.get(property));
+                if (i==0){
+
+                    return Collator.getInstance(Locale.CHINESE).compare(o1.get(property),o2.get(property));
+                }
+                else{
+                    return Collator.getInstance(Locale.CHINESE).compare(o2.get(property),o1.get(property));
+
+                }
             }
         });
     }
@@ -190,11 +199,12 @@ public class ImageServiceImpl implements ImageService {
             case "time":
                 List<Map<String, Object>> maps = imageDao.orderByTime(openId, i);
                 System.out.println("openId:  "+openId);
+                System.out.println(maps.toString());
                message= listToString(maps);
                 break;
                 default:
                     List<Map<String, Object>> maps1 = imageDao.selectByOpenId(openId);
-                    listSortByPinyin(id, maps1);
+                    listSortByPinyin(id, maps1,i);
                     message = listToString( maps1);
         }
         return message;

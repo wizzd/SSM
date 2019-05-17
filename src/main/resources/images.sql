@@ -21,4 +21,13 @@ create table images
 
 alter table images
   add primary key (img);
+  drop procedure if exists  sortByTime;
+create procedure  sortByTime(in a int,in n char(28))
+BEGIN
+if a = 1 then
+  select * from images where openId=n order by time asc;
+else
+  select * from images where openId=n  order by time desc ;
+end if;
+end;
 

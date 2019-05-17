@@ -81,16 +81,26 @@ Page({
       }    
     },
   // 单击
-  tap: function (e) {
+    tap: function (e) {
     var that = this
     var tmp = e.currentTarget.dataset.id
+    // that.lastTapTimeoutFunc = setTimeout(function () {
+    //   that.parese_sort_img_sort_status(tmp)
+
+    // }, 200);
+      that.parese_sort_img_sort_status(tmp)
     var sub = that.data.array[Math.log2(tmp)]
     if (that.data.imageurl[Math.log2(tmp)] == that.data.sortupicon){
       var order = "0"
     }
-    else
+    else if (that.data.imageurl[Math.log2(tmp)] == that.data.sortdownicon)
     var order = "1"
-     
+    else{
+      that.getMessage()
+      var order =''
+    }
+     console.log("order: "+order)
+     if(order!='')
     wx.request({
       url: 'http://localhost:8080/imges/sortMessage',
       data: {
@@ -107,10 +117,7 @@ Page({
         });    
       }
     });
-    that.lastTapTimeoutFunc = setTimeout(function () {
-      
-      that.parese_sort_img_sort_status(tmp)
-    }, 200);
+    
   },
 
  onShow: function(){
