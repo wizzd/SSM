@@ -43,6 +43,9 @@ public class ImageServiceImpl implements ImageService {
                 if ("GIF".equals(type.toUpperCase()) || "PNG".equals(type.toUpperCase()) || "JPG".equals(type.toUpperCase())) {
                     // 项目在容器中实际发布运行的根路径
                     realPath = request.getSession().getServletContext().getRealPath("/");
+                    File file1 = new File(realPath + "uploads");
+                    file1.mkdir();
+
                     // 自定义的文件名称
                     String trueFileName = String.valueOf(System.currentTimeMillis()) + fileName;
                     // 设置存放图片文件的路径
@@ -98,6 +101,7 @@ public class ImageServiceImpl implements ImageService {
 
                     }
 //                    System.out.println(time.toString());
+                    System.out.println("-------------");
                     System.out.println(user);
                     System.out.println(imgPath);
                     System.out.println(jsonObject.get("name").toString());
@@ -180,14 +184,11 @@ public class ImageServiceImpl implements ImageService {
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2) {
                 if (i==0){
-
                     return Collator.getInstance(Locale.CHINESE).compare(o1.get(property),o2.get(property));
                 }
                 else{
                     return Collator.getInstance(Locale.CHINESE).compare(o2.get(property),o1.get(property));
-
-                }
-            }
+                }            }
         });
     }
     @Override
